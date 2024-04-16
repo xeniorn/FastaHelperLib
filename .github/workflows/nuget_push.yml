@@ -45,7 +45,7 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release /p:PackageVersion=${VERSION} --no-build --output .tmp --force ./FastaHelperLib/FastaHelperLib.csproj 
     - name: Push
-      run: echo "dotnet nuget push .tmp/FastaHelperLib.${VERSION}.nupkg --source ${NUGET_ENDPOINT_URL}" # --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push .tmp/FastaHelperLib.${VERSION}.nupkg --source ${NUGET_ENDPOINT_URL} --api-key ${{ secrets.NUGET_API_KEY }}
       env:
         NUGET_ENDPOINT_URL: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
