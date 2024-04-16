@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34526.213
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastaHelperLib_Test", "FastaHelperLib_Test\FastaHelperLib_Test.csproj", "{2F05D1D1-7EA4-4E7A-A583-E50E33013257}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastaHelperLib", "FastaHelperLib\FastaHelperLib.csproj", "{4F5E49E2-908B-49DC-8E1B-B504A397B977}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F05D1D1-7EA4-4E7A-A583-E50E33013257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F05D1D1-7EA4-4E7A-A583-E50E33013257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F05D1D1-7EA4-4E7A-A583-E50E33013257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F05D1D1-7EA4-4E7A-A583-E50E33013257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F5E49E2-908B-49DC-8E1B-B504A397B977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5E49E2-908B-49DC-8E1B-B504A397B977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5E49E2-908B-49DC-8E1B-B504A397B977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5E49E2-908B-49DC-8E1B-B504A397B977}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1616EDA5-BA20-4262-9765-687E11A3D53C}
+	EndGlobalSection
+EndGlobal

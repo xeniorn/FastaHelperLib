@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <BaseOutputPath>bin\</BaseOutputPath>
+    <VersionPrefix>1.0.0</VersionPrefix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NugetRepo>https://www.myget.org/F/flappy-bird/api/v2/package</NugetRepo>
+  </PropertyGroup>
+
+  <Target Name="NugetPackAutoVersioning" AfterTargets="PostBuildEvent" Condition=" '$(USERNAME)' == 'juraj.ahe' ">
+    <Exec Command="&#xD;&#xA;set packver=$(VersionPrefix)-$([System.DateTime]::Now.ToString(&quot;yyyyMMddHHmm&quot;))&#xD;&#xA;set localnugetdir=$(ProjectDir)bin\nuget&#xD;&#xA;echo %packver%&#xD;&#xA;echo %localnugetdir%&#xD;&#xA;dotnet pack -p:PackageVersion=%packver% --no-build --configuration $(Configuration) --output &quot;%localnugetdir%&quot;&#xD;&#xA;set finalnuget=%localnugetdir%\$(TargetName).%packver%.nupkg&#xD;&#xA;echo %finalnuget%&#xD;&#xA;nuget push &quot;%finalnuget%&quot; -Source &quot;$(NugetRepo)&quot;&#xD;&#xA;    " />
+  </Target>
+
+
+
+
+  
+
+
+</Project>
