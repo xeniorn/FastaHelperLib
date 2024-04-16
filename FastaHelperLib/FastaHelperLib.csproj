@@ -5,7 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <BaseOutputPath>bin\</BaseOutputPath>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -16,7 +17,36 @@
     <Exec Command="&#xD;&#xA;set packver=$(VersionPrefix)-$([System.DateTime]::Now.ToString(&quot;yyyyMMddHHmm&quot;))&#xD;&#xA;set localnugetdir=$(ProjectDir)bin\nuget&#xD;&#xA;echo %packver%&#xD;&#xA;echo %localnugetdir%&#xD;&#xA;dotnet pack -p:PackageVersion=%packver% --no-build --configuration $(Configuration) --output &quot;%localnugetdir%&quot;&#xD;&#xA;set finalnuget=%localnugetdir%\$(TargetName).%packver%.nupkg&#xD;&#xA;echo %finalnuget%&#xD;&#xA;nuget push &quot;%finalnuget%&quot; -Source &quot;$(NugetRepo)&quot;&#xD;&#xA;    " />
   </Target>
 
+  <Choose>
+    <When Condition=" '$(VersionSuffix)'!='' ">
+      <PropertyGroup>
+        <PackageVersion>$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(VersionSuffix)'=='' ">
+      <PropertyGroup>
+        <PackageVersion>$(VersionPrefix)</PackageVersion>
+      </PropertyGroup>
+    </When>
+  </Choose>
 
+  <PropertyGroup>
+    <PackageId>FastaHelperLib</PackageId>
+    <Authors>Juraj Ahel</Authors>
+    <Description>FastaHelperLib provides functionality for parsing &amp; otherwise handling FASTA files.</Description>
+    <PackageProjectUrl>https://github.com/xeniorn/FastaHelperLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xeniorn/FastaHelperLib</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageTags>bioinformatics;fasta</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath=""/>
+    <None Include="../LICENSE" Pack="true" PackagePath=""/>
+    <None Include="../Resources/icon.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
 
 
   
