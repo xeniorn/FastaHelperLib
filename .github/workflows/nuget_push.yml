@@ -33,11 +33,11 @@ jobs:
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
         git branch --remote --contains | grep origin/main
     - name: Set VERSION variable from tag
-      if: "${{ github.event.inputs.override_version != true }}"
+      if: "${{ inputs.override_version == false || inputs.override_version == 'false' }}"
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Override version
-      if: "${{ github.event.inputs.override_version == true }}"
-      run: echo "github.event.inputs.version" >> $GITHUB_ENV
+      if: "${{ inputs.override_version == true || inputs.override_version == 'true' }}"
+      run: echo "inputs.version" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}
     - name: Test
