@@ -1,8 +1,15 @@
+# This workflow will build & test the .NET project, then package it and push to nuget
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: nuget-deploy
+
 on:
   push:
     tags:
     - "v[0-9]+.[0-9]+.[0-9]+"
     - "v[0-9]+.[0-9]+.[0-9]+-[A-Za-z0-9]+"
+  workflow_dispatch:
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,9 +28,9 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
     - name: Pack
-      run: dotnet pack --configuration Release /p:PackageVersion=${VERSION} --no-build --output .tmp --force .\FastaHelperLib\FastaHelperLib.csproj 
+      run: dotnet pack --configuration Release /p:PackageVersion=${VERSION} --no-build --output .tmp --force ./FastaHelperLib/FastaHelperLib.csproj 
     - name: Push
-      run: echo "dotnet nuget push .tmp/NuGet.Workflow.${VERSION}.nupkg --source ${NUGET_SOURCE}# # --api-key ${{ secrets.NUGET_API_KEY }}
+      run: echo "dotnet nuget push .tmp/FastaHelperLib.${VERSION}.nupkg --source ${NUGET_SOURCE}# # --api-key ${{ secrets.NUGET_API_KEY }}
       env:
         NUGET_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
