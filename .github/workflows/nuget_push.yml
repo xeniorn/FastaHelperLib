@@ -37,7 +37,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Override version
       if: "${{ inputs.override_version == true || inputs.override_version == 'true' }}"
-      run: echo ${{ inputs.version }} >> $GITHUB_ENV
+      run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}
     - name: Test
