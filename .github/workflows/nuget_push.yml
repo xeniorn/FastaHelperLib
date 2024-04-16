@@ -9,6 +9,17 @@ on:
     - "v[0-9]+.[0-9]+.[0-9]+"
     - "v[0-9]+.[0-9]+.[0-9]+-[A-Za-z0-9]+"
   workflow_dispatch:
+    inputs:
+      override_version:
+        description: 'should we override the version'
+        required: true
+        default: true
+        type: boolean
+      version:
+        description: 'version to build'
+        required: true
+        default: '0.0.0-test'
+        type: string
     
 jobs:
   build:
@@ -22,7 +33,11 @@ jobs:
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
         git branch --remote --contains | grep origin/main
     - name: Set VERSION variable from tag
+      if: "${{ github.event.inputs.override_version != true }}"
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+    - name: Override version
+      if: "${{ github.event.inputs.override_version == true }}"
+      run: echo "github.event.inputs.version" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}
     - name: Test
