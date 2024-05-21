@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Text;
 
 namespace FastaHelperLib;
 

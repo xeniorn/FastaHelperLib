@@ -1,7 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Xml.Linq;
-
-namespace FastaHelperLib;
+﻿namespace FastaHelperLib;
 
 public class RapidFastaEntry : FastaEntry
 {
