@@ -108,20 +108,65 @@ public class FastaEntry : IComparable<FastaEntry>
         return String.Compare(this.Sequence, other.Sequence, StringComparison.OrdinalIgnoreCase);
     }
 
-    public override string ToString()
+    /// <summary>
+    /// Returns a string representation of the fasta entry.
+    /// </summary>
+    /// <param name="newLineSymbol"></param>
+    /// <param name="splitSequenceLinesToLength"></param>
+    /// <param name="includeComments">Avoid this generally, most software does not handle fasta comments</param>
+    /// <returns></returns>
+    public string ToString(string newLineSymbol = "\n", int? splitSequenceLinesToLength = null, bool includeComments = false)
     {
-        var fastaWithoutComments = $"{Header}{Environment.NewLine}{Sequence}{Environment.NewLine}";
+        var lines = new List<string>();
 
-        if (Comments.Any())
+        if (includeComments)
         {
-            var commentLines = String.Join(Environment.NewLine, Comments.Select(x => $"{DefaultCommentSymbol}{x}"));
-            return $"{commentLines}{Environment.NewLine}{fastaWithoutComments}";
+            var commentLines = Comments.Select(x => $"{DefaultCommentSymbol}{x}");
+            lines.AddRange(commentLines);
+        }
+
+        lines.Add(Header);
+
+        var splitSequence = splitSequenceLinesToLength is not null;
+        if (splitSequence)
+        {
+            var lineLength = splitSequenceLinesToLength.Value;
+
+            var chunkCount = 1 + (Sequence.Length - 1) / (lineLength);
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var start = i * lineLength;
+                var end = start + lineLength - 1;
+                if (end >= Sequence.Length) end = Sequence.Length - 1;
+
+                var chunk = Sequence.Substring(i * lineLength, 1 + end - start);
+                lines.Add(chunk);
+            }
         }
         else
         {
-            return fastaWithoutComments;
+            lines.Add(Sequence);
         }
+
+        var res = string.Join(newLineSymbol, lines) + newLineSymbol;
+
+        return res;
     }
+
+    public override string ToString() => ToString("\n", null, true);
+    //{
+    //    var fastaWithoutComments = $"{Header}{Environment.NewLine}{Sequence}{Environment.NewLine}";
+
+    //    if (Comments.Any())
+    //    {
+    //        var commentLines = String.Join(Environment.NewLine, Comments.Select(x => $"{DefaultCommentSymbol}{x}"));
+    //        return $"{commentLines}{Environment.NewLine}{fastaWithoutComments}";
+    //    }
+    //    else
+    //    {
+    //        return fastaWithoutComments;
+    //    }
+    //}
 
     public const string DefaultCommentSymbol = "#";
 
