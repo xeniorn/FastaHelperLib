@@ -3,7 +3,6 @@ using FastaHelperLib;
 
 namespace FastaHelperLib_Test;
 
-
 public class ValidMultiFastaDataForExport : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()

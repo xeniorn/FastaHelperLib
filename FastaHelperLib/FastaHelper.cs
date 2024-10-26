@@ -24,6 +24,101 @@ public static class FastaHelper
     public const string FastaCommentSymbol_Ladder = @"#";
     public const string FastaCommentSymbol_Semicolon = @";";
 
+    public static async IAsyncEnumerable<ParseFastaPartialResult> ProcessMultiFastaStream(
+        Stream fastaStream,
+        SequenceType sequenceType, 
+        string keepExtraCharacters = "")
+    {
+        var comments = new List<string>();
+        var header = String.Empty;
+        var sequenceParts = new List<string>();
+
+        var hasHeaderLine = false;
+        var hasSequenceLines = false;
+
+        var reader = new StreamReader(fastaStream);
+
+        var firstLine = await reader.ReadLineAsync();
+        var isEmpty = (firstLine is null);
+
+        if (isEmpty) yield break;
+
+        var nextLine = firstLine!;
+        bool isLastLine = false;
+
+        while (!isLastLine)
+        {
+            var line = nextLine!;
+            nextLine = await reader.ReadLineAsync();
+            isLastLine = (nextLine is null);
+
+            ParseFastaPartialResult MakeResult(SequenceType seqType, string keepChars, string header,
+                List<string> sequenceLines, List<string> commentLines)
+            {
+                var newEntry = FastaHelper.GenerateEntry(seqType, header, string.Join("", sequenceLines),
+                    commentLines, keepChars);
+
+                //hasSequence doesn't know if any of these lines are valid sequences until it's parsed in the new entry
+                if (hasHeaderLine && hasSequenceLines && newEntry.Sequence.Length > 0)
+                {
+                    return new ParseFastaPartialResult(true, newEntry);
+                }
+                else
+                {
+                    return new ParseFastaPartialResult(false, newEntry);
+                }
+            }
+
+            var isCommentLine = line.StartsWith(FastaCommentSymbol_Ladder) ||
+                                line.StartsWith(FastaCommentSymbol_Semicolon);
+            var isHeaderLine = line.StartsWith(FastaHeaderSymbol);
+
+            if (isHeaderLine || isCommentLine)
+            {
+                //resolve existing entry and open a new one
+                if (isHeaderLine && hasHeaderLine || isCommentLine && hasSequenceLines)
+                {
+                    var result = MakeResult(sequenceType, keepExtraCharacters, header, sequenceParts, comments);
+                    yield return result;
+
+                    hasSequenceLines = false;
+                    hasHeaderLine = false;
+
+                    comments = new();
+                    sequenceParts = new();
+                    header = string.Empty;
+                }
+
+                if (isHeaderLine)
+                {
+                    hasHeaderLine = true;
+                    header = line;
+                }
+                else if (isCommentLine)
+                {
+                    comments.Add(line);
+                }
+                else
+                {
+                    throw new Exception("Unreachable");
+                }
+            }
+            else // not a special line, so it's a sequence line
+            {
+                sequenceParts.Add(line);
+                hasSequenceLines = true;
+            }
+
+            //must save the last one, there will be no further loops
+            if (isLastLine)
+            {
+                yield return MakeResult(sequenceType, keepExtraCharacters, header, sequenceParts, comments);
+            }
+        }
+
+        yield break;
+    }
+
     public static MultiFastaProcessResult ProcessMultiFasta(string text, SequenceType sequenceType,  string keepCharacters = "")
     {
         var lines = FastaHelper.RectifyNewlines(text).Split("\n");
@@ -290,3 +385,6 @@ public static class FastaHelper
         return RapidFastaEntry.Generate(sequenceType, header, sequence);
     }
 }
+
+public record ParseFastaPartialResult(bool Success, FastaEntry Fasta);
+
